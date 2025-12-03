@@ -22,6 +22,8 @@ This database is measured in **Petabytes (PB)**—millions of Gigabytes. Managin
 
 Ingesting and validating genomic data at this scale is expensive and time-consuming. Running quality checks (like FASTQC) on a 10TB dataset can take days and cost thousands of dollars in cloud compute time. If a file is corrupted, discovering it *after* processing is a massive waste of resources.
 
+![SRA Validator Dashboard](https://github.com/KevinRoozrokh/NIH-NCBI-SRA-Validator-AI/blob/main/images/NIH-NCBI-SRA-Validator-AI-screenshot.jpg?raw=true)
+
 -----
 
 ## ✨ Key Features: How This Tool Helps
@@ -34,6 +36,8 @@ This application leverages AI and simulation to streamline the SRA submission an
   * **Bioinformatics AI:** Leverage the Gemini AI to generate customized Python validation scripts and answer complex technical questions related to genomic data formats and protocols.
   * **SRA Data Simulation:** Create synthetic but structurally accurate NCBI SRA metadata and sequence submission scenarios for comprehensive testing.
 
+
+![SRA Validator Dashboard](https://github.com/KevinRoozrokh/NIH-NCBI-SRA-Validator-AI/blob/main/images/NIH-NCBI-SRA-Validator-AI-screenshot-2.jpg?raw=true)
 -----
 
 ## 🚀 Run Locally
