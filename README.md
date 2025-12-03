@@ -1,20 +1,85 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# NIH-NCBI-SRA-Validator-AI
 
-# Run and deploy your AI Studio app
+## 🧬 Understanding the NCBI SRA Validator AI
 
-This contains everything you need to run your app locally.
+This application serves as a **"Flight Simulator for DNA Data"** designed to optimize cloud operations for the world's largest biological databases, specifically those managed by the National Center for Biotechnology Information (NCBI) within the National Institutes of Health (NIH).
 
-View your app in AI Studio: https://ai.studio/apps/drive/1XVxPnO9ndKDjA7enCczgFe9nSLefF6NS
+It leverages **Generative AI** capabilities to simulate, validate, and troubleshoot data submissions for the **Sequence Read Archive (SRA)**, ensuring data quality, structural integrity, and adherence to NCBI's submission guidelines before deployment in a cloud environment.
 
-## Run Locally
+-----
 
-**Prerequisites:**  Node.js
+## ✨ Key Features
 
+  * **SRA Data Simulation:** Create synthetic but structurally accurate NCBI SRA metadata and sequence submission scenarios for testing.
+  * **AI-Powered Validation:** Utilize the Gemini API to analyze proposed SRA data models and metadata for potential errors, missing fields, and compliance issues.
+  * **Cloud Optimization Insights:** Gain recommendations on how to structure and prepare submissions to minimize processing time and cost in cloud-based storage and compute pipelines.
+  * **Interactive Interface:** A modern, TypeScript-based web application for easy interaction and visualization of validation results.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+-----
+
+## 🚀 Run Locally
+
+This project was generated from a Google Gemini AI Studio repository template and requires Node.js and a Gemini API key to run.
+
+### Prerequisites
+
+  * **Node.js** (LTS version recommended)
+  * **Git**
+
+### Installation
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/KevinRoozrokh/NIH-NCBI-SRA-Validator-AI.git
+    cd NIH-NCBI-SRA-Validator-AI
+    ```
+
+2.  **Install dependencies:**
+
+    ```bash
+    npm install
+    ```
+
+3.  **Configure API Key:**
+    Create a file named `.env.local` in the root of the project directory and add your Gemini API key:
+
+    ```
+    # .env.local
+    GEMINI_API_KEY="YOUR_GEMINI_API_KEY_HERE"
+    ```
+
+4.  **Run the application:**
+
+    ```bash
+    npm run dev
+    ```
+
+The application will now be running on `http://localhost:5173` (or a similar port displayed in your terminal).
+
+-----
+
+## 🛠️ Built With
+
+  * **TypeScript**
+  * **React** (Inferred from `.tsx` files)
+  * **Vite** (Build Tool)
+  * **Google Gemini API** (For AI validation and simulation logic)
+
+-----
+
+## 🤝 Contributing
+
+This project is open-source. Contributions are welcome\! Please feel free to open an issue or submit a pull request.
+
+-----
+
+## 📝 License
+
+This project is licensed under the **MIT License**.
+
+-----
+
+## 👤 Author
+
+  * \<a href="[https://kevinroozrokh.com](https://kevinroozrokh.com)" target="\_blank"\>**Kevin Roozrokh**\</a\>
