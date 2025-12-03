@@ -1,0 +1,5 @@
+{
+  "name": "NCBI SRA Validator AI",
+  "description": "A workbench to generate, customize, and simulate SRA (Sequence Read Archive) validation scripts using Gemini 2.5.",
+  "requestFramePermissions": []
+}
