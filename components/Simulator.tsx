@@ -17,6 +17,9 @@ export const Simulator: React.FC<SimulatorProps> = ({ config, setConfig }) => {
   const [result, setResult] = useState<SRASentinelReport | null>(null);
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [fastqcUrl, setFastqcUrl] = useState<string | null>(null);
+  const [isRunningFastqc, setIsRunningFastqc] = useState(false);
+  
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll logs
@@ -99,6 +102,8 @@ export const Simulator: React.FC<SimulatorProps> = ({ config, setConfig }) => {
     setProgress(0);
     setResult(null);
     setAnalysis(null);
+    setFastqcUrl(null);
+    setIsRunningFastqc(false);
 
     // MOCK NGS DATA GENERATION
     // Since we can't run real Python NGS API in browser, we simulate realistic numbers based on file size
@@ -256,6 +261,28 @@ export const Simulator: React.FC<SimulatorProps> = ({ config, setConfig }) => {
     }
   };
 
+  const handleRunFastqc = () => {
+    setIsRunningFastqc(true);
+    addLog('INFO', 'Initializing FASTQC v0.11.9...');
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 20;
+        if (progress < 100) {
+            addLog('DEBUG', `FASTQC Progress: ${progress}%`);
+        } else {
+            clearInterval(interval);
+            addLog('SUCCESS', 'FASTQC Analysis Complete.');
+            addLog('INFO', 'Generating HTML report...');
+            // Mock URL pointing to the SRA Run Browser for the given accession
+            const mockUrl = `https://trace.ncbi.nlm.nih.gov/Traces/sra/?run=${config.accessionId}`;
+            setFastqcUrl(mockUrl);
+            addLog('SUCCESS', `Report available: ${config.accessionId}_fastqc.html`);
+            setIsRunningFastqc(false);
+        }
+    }, 500);
+  };
+
   const renderPhredAnalysis = () => {
     if (!result) return null;
     const qScore = result.quality_assessment.average_phred_score;
@@ -279,7 +306,7 @@ export const Simulator: React.FC<SimulatorProps> = ({ config, setConfig }) => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="bg-slate-900/80 p-5 rounded-lg border border-slate-700/50 hover:border-slate-600 transition-all shadow-sm">
                 <div className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">Average Q-Score</div>
-                <div className={`text-3xl font-bold font-mono ${isGood ? 'text-green-400' : 'text-yellow-400'}`}>
+                <div className={`text-xl lg:text-2xl font-bold font-mono ${isGood ? 'text-green-400' : 'text-yellow-400'}`}>
                   {qScore.toFixed(2)}
                 </div>
                 <div className="text-[10px] text-slate-500 mt-2 font-medium">Logarithmic Scale (0-40)</div>
@@ -287,7 +314,7 @@ export const Simulator: React.FC<SimulatorProps> = ({ config, setConfig }) => {
               
               <div className="bg-slate-900/80 p-5 rounded-lg border border-slate-700/50 hover:border-slate-600 transition-all shadow-sm">
                 <div className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">Base Accuracy</div>
-                <div className="text-3xl font-bold font-mono text-blue-400">
+                <div className="text-xl lg:text-2xl font-bold font-mono text-blue-400">
                   {accuracy.toFixed(2)}%
                 </div>
                 <div className="text-[10px] text-slate-500 mt-2 font-medium">Confidence Probability</div>
@@ -295,8 +322,8 @@ export const Simulator: React.FC<SimulatorProps> = ({ config, setConfig }) => {
               
               <div className="bg-slate-900/80 p-5 rounded-lg border border-slate-700/50 hover:border-slate-600 transition-all shadow-sm">
                  <div className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">Error Probability</div>
-                 <div className="text-3xl font-bold font-mono text-purple-400 truncate" title={`1 in ${Math.round(1/errorProb).toLocaleString()}`}>
-                   1 in {Math.round(1/errorProb).toLocaleString()}
+                 <div className="text-xl lg:text-2xl font-bold font-mono text-purple-400 truncate" title={`1/${Math.round(1/errorProb)}`}>
+                   1/{Math.round(1/errorProb)}
                  </div>
                  <div className="text-[10px] text-slate-500 mt-2 font-medium">Chance of Incorrect Call</div>
               </div>
@@ -636,11 +663,46 @@ export const Simulator: React.FC<SimulatorProps> = ({ config, setConfig }) => {
         
         {/* Footer Actions */}
         {status === AppState.COMPLETED && (
-          <div className="p-3 bg-slate-900 border-t border-slate-800 flex justify-end gap-3">
+          <div className="p-3 bg-slate-900 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+             <div className="flex flex-col gap-2 w-full sm:w-auto">
+                 {!fastqcUrl ? (
+                     <button
+                       onClick={handleRunFastqc}
+                       disabled={isRunningFastqc || isAnalyzing}
+                       className="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded flex items-center justify-center gap-2 transition-colors border border-slate-600 w-full sm:w-auto"
+                     >
+                       {isRunningFastqc ? 'Running FASTQC...' : 'Run FASTQC'}
+                       {!isRunningFastqc && <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>}
+                     </button>
+                 ) : (
+                    <div className="flex flex-col gap-1">
+                        <div className="flex gap-2">
+                             <button
+                               onClick={handleRunFastqc}
+                               disabled={isRunningFastqc || isAnalyzing}
+                               className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded border border-slate-700"
+                             >
+                               Re-run
+                             </button>
+                             <a 
+                                href={fastqcUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-xs bg-brand-900/50 text-brand-300 border border-brand-500/30 px-3 py-1.5 rounded flex items-center gap-1.5 hover:bg-brand-900/80 transition-colors"
+                             >
+                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                View Generated FASTQC Report
+                             </a>
+                        </div>
+                        <span className="text-[10px] text-slate-500 ml-1">Simulated Report Link</span>
+                    </div>
+                 )}
+             </div>
+             
              <button 
                onClick={handleAnalyze}
-               disabled={isAnalyzing}
-               className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded flex items-center gap-2 transition-colors"
+               disabled={isAnalyzing || isRunningFastqc}
+               className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded flex items-center justify-center gap-2 transition-colors w-full sm:w-auto"
              >
                {isAnalyzing ? 'Thinking...' : 'Analyze Logs with Gemini'}
                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
