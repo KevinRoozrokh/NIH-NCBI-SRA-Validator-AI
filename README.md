@@ -105,4 +105,4 @@ This project is licensed under the **MIT License**.
 
 ## 👤 Author
 
-  * \<a href="[https://kevinroozrokh.com](https://kevinroozrokh.com)" target="\_blank"\>**Kevin Roozrokh**\</a\>
+* [**Kevin Roozrokh**](https://kevinroozrokh.com)
